@@ -1,0 +1,32 @@
+coding = ''
+name = ''
+'''simple html picture Grabbing'''
+import requests
+import parsel
+
+headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'
+        }
+for page_num in range(0,1082,50):
+    response = requests.get('https://tieba.baidu.com/f?kw=%C3%C3%D7%D3&fr=ala0&tpl=page_num')#give a request via get
+    html = parsel.Selector(response.text)#Resolution
+    result_1 = html.xpath('//div[@class="threadlist_lz clearfix"]/div/a/@href').extract()#key words Grabbing
+    #print(result_1)#for checking result,so as too
+'''inner page grapping'''
+    second_url = 'https://tieba.baidu.com'
+    for url_1 in result_1:
+        url_all = second_url + url_1
+        #print(url_all)
+'''Resolution again ,but for inner url or uri'''
+        response_1 = requests.get(url_all)
+        response_2 = parsel.Selector(response_1.text)
+        result_3 = response_2.xpath('//div/img[@class="BDE_Image"]/@src').extract()
+        print(result_3)
+'''picture saveing'''
+        for li in result_3:
+            img_date = requests.get(li).content
+            file_name = li.split('/')[-1]
+            #print('正在下载', file_name）
+            with open('D:/tensory/a' + file_name, 'wb') as f:
+                f.write(img_date)
+ althougu conde above may simple  and also   Draw lessons from  others ,but today i Retell it.
